@@ -1,0 +1,9 @@
+version: "2"
+
+services:
+  cloudflare:
+    build: ./
+    container_name: cloudflare
+    user: root
+    restart: always
+    env_file: ./env.txt
