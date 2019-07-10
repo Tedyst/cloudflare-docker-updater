@@ -5,5 +5,5 @@ services:
     build: ./
     container_name: cloudflare
     user: root
-    restart: always
+    restart: no
     env_file: ./env.txt
