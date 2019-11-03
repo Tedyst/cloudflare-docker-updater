@@ -9,9 +9,16 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag docker.pkg.github.com/tedyst/cloudflare-docker-updater/cloudflare-docker-updater:latest
+        run: |
+          docker build . --file Dockerfile --tag docker.pkg.github.com/tedyst/cloudflare-docker-updater/cloudflare-docker-updater:latest
+          docker tag docker.pkg.github.com/tedyst/cloudflare-docker-updater/cloudflare-docker-updater:latest tedyst/cloudflare-docker-updater:latest
       - name: Push to GitHub docker registry
         run: |
           docker login -p ${{ secrets.GITHUB_TOKEN }} -u tedyst docker.pkg.github.com
           docker push docker.pkg.github.com/tedyst/cloudflare-docker-updater/cloudflare-docker-updater:latest
+        continue-on-error: true
+      - name: Push to DockerHub registry
+        run: |
+          docker login -p ${{ secrets.DOCKER_TOKEN }} -u tedyst
+          docker push tedyst/cloudflare-docker-updater:latest
         continue-on-error: true
