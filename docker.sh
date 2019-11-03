@@ -48,7 +48,7 @@ function setRecordIP() {
 
 oldip=""
 function main() {
-	local ip="$(dig +short myip.opendns.com @resolver1.opendns.com)"
+	local ip="$(curl -s https://api.ipify.org/)"
 	if [ "${ip}" == "${oldip}" ] ; then
 		log "skip update ${CFHOST} with the same IP ${ip}"
 		return 0
@@ -64,4 +64,9 @@ function main() {
 	return 0
 }
 
-main
+[ -z "${CFINTERVAL}" ] && main && die "Exited since CFINTERVAL not set."
+
+while true; do
+	main
+	sleep $CFINTERVAL
+done;
