@@ -10,7 +10,8 @@ jobs:
       - uses: actions/checkout@v1
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag docker.pkg.github.com/tedyst/cloudflare-docker-updater/cloudflare-docker-updater:$(git rev-parse --short HEAD)
-      - name: Login to Github Docker registry
-        run: docker login -p $GITHUB_PUSH_DOCKER_TOKEN -u tedyst docker.pkg.github.com
       - name: Push to GitHub docker registry
-        run: docker push docker.pkg.github.com/tedyst/cloudflare-docker-updater/cloudflare-docker-updater:$(git rev-parse --short HEAD)
+        run:
+          docker login -p ${{ secrets.GITHUB_PUSH_DOCKER_TOKEN }} -u tedyst docker.pkg.github.com &&\
+          docker push docker.pkg.github.com/tedyst/cloudflare-docker-updater/cloudflare-docker-updater:$(git rev-parse --short HEAD)
+        continue-on-error: true
