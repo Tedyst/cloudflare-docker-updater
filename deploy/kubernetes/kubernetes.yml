@@ -9,8 +9,6 @@ spec:
     spec:
       template:
         spec:
-          imagePullSecrets:
-            - name: regcred
           containers:
             - name: cloudflare-updater
               image: tedyst/cloudflare-docker-updater:latest

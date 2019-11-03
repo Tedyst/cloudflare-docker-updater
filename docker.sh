@@ -64,7 +64,7 @@ function main() {
 	return 0
 }
 
-[ -z "${CFINTERVAL}" ] && main && die "Exited since CFINTERVAL not set."
+[ -z "${CFINTERVAL}" ] && main && echo "Exited since CFINTERVAL not set." && exit 0
 
 while true; do
 	main
