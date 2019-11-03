@@ -5,7 +5,7 @@ function timestamp() {
 }
 
 function log() {
-	echo "$(timestamp) $@"
+	echo "$(timestamp)" "$@"
 }
 
 function die() {
@@ -48,7 +48,8 @@ function setRecordIP() {
 
 oldip=""
 function main() {
-	local ip="$(curl -s https://api.ipify.org/)"
+	local ip
+	ip="$(curl -s https://api.ipify.org/)"
 	if [ "${ip}" == "${oldip}" ] ; then
 		log "skip update ${CFHOST} with the same IP ${ip}"
 		return 0
@@ -68,5 +69,5 @@ function main() {
 
 while true; do
 	main
-	sleep $CFINTERVAL
+	sleep "$CFINTERVAL"
 done;
