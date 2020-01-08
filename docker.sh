@@ -2,6 +2,7 @@
 
 if [ -f ".env" ]; then
     set -o allexport
+	# shellcheck disable=SC1091
 	source .env
 	set +o allexport
 fi
@@ -34,8 +35,6 @@ i=0
 for record in ${CFHOST} ; do
 	record_names[${i}]="${record}"
 	record_ids[${i}]="$(getRecordID "${record}")"
-	echo ${record_names[${i}]}
-	echo ${record_ids[${i}]}
 	((i++))
 done
 
