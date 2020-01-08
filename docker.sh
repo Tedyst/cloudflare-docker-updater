@@ -70,4 +70,4 @@ function main() {
 while true; do
 	main
 	sleep "$CFINTERVAL"
-done;
+done
