@@ -13,12 +13,10 @@ function die() {
 	exit 1
 }
 
-[ -z "${CFKEY}" ] && die "CFKEY is required"
-[ -z "${CFUSER}" ] && die "CFUSER is required"
 
 function getZoneID() {
 	local zone_name="${1}"
-	curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$zone_name" -H "X-Auth-Email: $CFUSER" -H "X-Auth-Key: $CFKEY" -H "Content-Type: application/json" | jq '.result[0].id' | sed 's/"//g'
+	curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$zone_name" -H "Authorization: Bearer WhLa7SV-O6OMuPRY10OcWwV3vblJbpCICV9thssm" -H "Content-Type: application/json" | jq '.result[0].id' | sed 's/"//g'
 }
 
 [ -z "${CFZONE}" ] && die "CFZONE is required"
@@ -26,7 +24,7 @@ zone_identifier="$(getZoneID "${CFZONE}")"
 
 function getRecordID() {
 	local record_name="${1}"
-	curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?name=$record_name" -H "X-Auth-Email: $CFUSER" -H "X-Auth-Key: $CFKEY" -H "Content-Type: application/json" | jq '.result[0].id' | sed 's/"//g'
+	curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?name=$record_name" -H "Authorization: Bearer WhLa7SV-O6OMuPRY10OcWwV3vblJbpCICV9thssm" -H "Content-Type: application/json" | jq '.result[0].id' | sed 's/"//g'
 }
 
 [ -z "${CFHOST}" ] && die "CFHOST is required"
@@ -43,7 +41,7 @@ function setRecordIP() {
 	local record_name="${1}"
 	local record_identifier="${2}"
 	local ip="${3}"
-	curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records/$record_identifier" -H "X-Auth-Email: $CFUSER" -H "X-Auth-Key: $CFKEY" -H "Content-Type: application/json" --data "{\"id\":\"$zone_identifier\",\"type\":\"A\",\"name\":\"$record_name\",\"content\":\"$ip\"}"
+	curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records/$record_identifier" -H "Authorization: Bearer WhLa7SV-O6OMuPRY10OcWwV3vblJbpCICV9thssm" -H "Content-Type: application/json" --data "{\"id\":\"$zone_identifier\",\"type\":\"A\",\"name\":\"$record_name\",\"content\":\"$ip\"}"
 }
 
 oldip=""
