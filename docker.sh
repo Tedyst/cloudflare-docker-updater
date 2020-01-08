@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ -f ".env" ]; then
+    set -o allexport
+	source .env
+	set +o allexport
+fi
+
+
 function timestamp() {
 	date "+%Y-%m-%dT%H:%M:%S%z"
 }
@@ -13,27 +20,22 @@ function die() {
 	exit 1
 }
 
-
-function getZoneID() {
-	local zone_name="${1}"
-	curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$zone_name" -H "Authorization: Bearer WhLa7SV-O6OMuPRY10OcWwV3vblJbpCICV9thssm" -H "Content-Type: application/json" | jq '.result[0].id' | sed 's/"//g'
-}
-
-[ -z "${CFZONE}" ] && die "CFZONE is required"
-zone_identifier="$(getZoneID "${CFZONE}")"
+[ -z "${CFTOKEN}" ] && die "CFTOKEN is required"
+[ -z "${CFZONEID}" ] && die "CFZONEID is required"
+[ -z "${CFUSERID}" ] && die "CFUSERID is required"
+[ -z "${CFHOST}" ] && die "CFHOST is required"
 
 function getRecordID() {
 	local record_name="${1}"
-	curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?name=$record_name" -H "Authorization: Bearer WhLa7SV-O6OMuPRY10OcWwV3vblJbpCICV9thssm" -H "Content-Type: application/json" | jq '.result[0].id' | sed 's/"//g'
+	curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$CFZONEID/dns_records?name=$record_name" -H "Authorization: Bearer $CFTOKEN" -H "Content-Type: application/json" | jq '.result[0].id' | sed 's/"//g'
 }
 
-[ -z "${CFHOST}" ] && die "CFHOST is required"
-unset record_names
-unset record_ids
 i=0
 for record in ${CFHOST} ; do
 	record_names[${i}]="${record}"
 	record_ids[${i}]="$(getRecordID "${record}")"
+	echo ${record_names[${i}]}
+	echo ${record_ids[${i}]}
 	((i++))
 done
 
@@ -41,7 +43,7 @@ function setRecordIP() {
 	local record_name="${1}"
 	local record_identifier="${2}"
 	local ip="${3}"
-	curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records/$record_identifier" -H "Authorization: Bearer WhLa7SV-O6OMuPRY10OcWwV3vblJbpCICV9thssm" -H "Content-Type: application/json" --data "{\"id\":\"$zone_identifier\",\"type\":\"A\",\"name\":\"$record_name\",\"content\":\"$ip\"}"
+	curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$CFZONEID/dns_records/$record_identifier" -H "Authorization: Bearer $CFTOKEN" -H "Content-Type: application/json" --data "{\"id\":\"$CFZONEID\",\"type\":\"A\",\"name\":\"$record_name\",\"content\":\"$ip\"}"
 }
 
 oldip=""
