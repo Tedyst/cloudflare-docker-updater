@@ -6,4 +6,4 @@ services:
     container_name: cloudflare
     user: root
     restart: no
-    env_file: ./env.txt
+    env_file: ./.env

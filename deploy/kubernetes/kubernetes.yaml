@@ -14,21 +14,21 @@ spec:
             - name: cloudflare-updater
               image: tedyst/cloudflare-docker-updater:latest
               env:
-                - name: CFKEY
+                - name: CFZONEID
                   valueFrom:
                     secretKeyRef:
                       name: cloudflare-secret
-                      key: CFKEY
-                - name: CFUSER
+                      key: CFZONEID
+                - name: CFUSERID
                   valueFrom:
                     secretKeyRef:
                       name: cloudflare-secret
-                      key: CFUSER
-                - name: CFZONE
+                      key: CFUSERID
+                - name: CFTOKEN
                   valueFrom:
                     secretKeyRef:
                       name: cloudflare-secret
-                      key: CFZONE
+                      key: CFTOKEN
                 - name: CFHOST
                   valueFrom:
                     secretKeyRef:
