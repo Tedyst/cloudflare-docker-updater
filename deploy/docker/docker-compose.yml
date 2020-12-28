@@ -1,9 +1,0 @@
-version: "2"
-
-services:
-  cloudflare:
-    image: docker.pkg.github.com/tedyst/cloudflare-docker-updater/cloudflare-docker-updater:caecea7
-    container_name: cloudflare
-    user: root
-    restart: no
-    env_file: ./.env
